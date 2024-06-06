@@ -52,13 +52,19 @@ app.delete("/api/persons/:id", (request, response) => {
   response.status(204).end();
 });
 
-app.post('/api/persons', (request, response) => {
-    const { name, number } = request.body;
+app.post("/api/persons", (request, response) => {
+  const { name, number } = request.body;
+  const err = (error) => response.status(400).json({ error });
+  if (!(name && number)) {
+    err("name or number missing");
+  } else if (persons.find((p) => p.name === name)) {
+    err("name must be unique");
+  } else {
     const person = { id: Math.trunc(Math.random() * 10000), name, number };
-    console.log(person);
     persons = persons.concat(person);
     response.json(person);
-  });
+  }
+});
 
 const PORT = 3001;
 app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
