@@ -19,9 +19,9 @@ app.use(
 );
 
 app.get("/api/persons", (request, response, next) => {
-  Person.find({}).then((persons) =>
-    response.json(persons).catch((error) => next(error))
-  );
+  Person.find({})
+    .then((persons) => response.json(persons))
+    .catch((error) => next(error));
 });
 
 app.get("/info", (request, response) => {
@@ -49,10 +49,29 @@ app.delete("/api/persons/:id", (request, response, next) => {
     .catch((error) => next(error));
 });
 
-app.post("/api/persons", (request, response) => {
+app.post("/api/persons", (request, response, next) => {
   const { name, number } = request.body;
+  if (!(name && number)) {
+    return response.status(400).json({
+      error: "name or number missing",
+    });
+  }
   const person = new Person({ name, number });
-  person.save().then((savedPerson) => response.json(savedPerson));
+  person
+    .save()
+    .then((savedPerson) => response.json(savedPerson))
+    .catch((error) => next(error));
+});
+
+app.put("/api/persons/:id", (request, response, next) => {
+  const { name, number } = request.body;
+  if (!(name && number))
+    return response.status(400).json({
+      error: "Name or Number missing",
+    });
+  Person.findByIdAndUpdate(request.params.id, { name, number }, { new: true })
+    .then((updatedPerson) => response.json(updatedPerson))
+    .catch((error) => next(error));
 });
 
 const errorHandler = (error, request, response, next) => {
