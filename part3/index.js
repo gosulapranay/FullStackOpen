@@ -24,15 +24,13 @@ app.get("/api/persons", (request, response, next) => {
     .catch((error) => next(error));
 });
 
-app.get("/info", (request, response) => {
-  let time = new Date();
-  time = time.toString();
-  response.send(
-    `<div>
-        <p>Phonebook has info for ${persons.length} people</p>
-        <p>${time}</p>    
-    </div>`
-  );
+app.get("/info", (request, response, next) => {
+  Person.estimatedDocumentCount({})
+    .then((count) => {
+      const msg = `<div><p>Phonebook has info for ${count} people</p><p>${new Date().toString()}</p></div>`;
+      response.send(msg);
+    })
+    .catch((error) => next(error));
 });
 
 app.get("/api/persons/:id", (request, response, next) => {
