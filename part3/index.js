@@ -57,10 +57,10 @@ app.get("/api/persons/:id", (request, response) => {
   Person.findById(request.params.id).then((persons) => response.json(persons));
 });
 
-app.delete("/api/persons/:id", (request, response) => {
-  const id = Number(request.params.id);
-  persons = persons.filter((p) => p.id !== id);
-  response.status(204).end();
+app.delete("/api/persons/:id", (request, response, next) => {
+  Person.findByIdAndDelete(request.params.id)
+    .then((result) => response.status(204).end())
+    .catch((error) => next(error));
 });
 
 app.post("/api/persons", (request, response) => {
