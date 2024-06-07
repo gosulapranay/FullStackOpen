@@ -2,7 +2,7 @@ require("dotenv").config();
 const express = require("express");
 const app = express();
 app.use(express.json());
-const Person = require('./models/person');
+const Person = require("./models/person");
 const morgan = require("morgan");
 morgan.token("body", (req) =>
   Object.values(req.body)[0] ? JSON.stringify(req.body) : null
@@ -65,16 +65,8 @@ app.delete("/api/persons/:id", (request, response) => {
 
 app.post("/api/persons", (request, response) => {
   const { name, number } = request.body;
-  const err = (error) => response.status(400).json({ error });
-  if (!(name && number)) {
-    err("name or number missing");
-  } else if (persons.find((p) => p.name === name)) {
-    err("name must be unique");
-  } else {
-    const person = { id: Math.trunc(Math.random() * 10000), name, number };
-    persons = persons.concat(person);
-    response.json(person);
-  }
+  const person = new Person({ name, number });
+  person.save().then((savedPerson) => response.json(savedPerson));
 });
 
 const PORT = process.env.PORT;
