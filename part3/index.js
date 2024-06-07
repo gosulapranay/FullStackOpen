@@ -9,6 +9,10 @@ app.use(
   morgan(":method :url :status :res[content-length] - :response-time ms :body")
 );
 
+const cors = require("cors");
+app.use(cors());
+app.use(express.static("dist"));
+
 let persons = [
   {
     id: 1,
@@ -73,5 +77,5 @@ app.post("/api/persons", (request, response) => {
   }
 });
 
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
