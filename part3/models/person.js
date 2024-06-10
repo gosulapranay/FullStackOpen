@@ -1,16 +1,16 @@
-require("dotenv").config();
-const mongoose = require("mongoose");
-mongoose.set("strictQuery", false);
-const url = process.env.MONGODB_URI;
+require('dotenv').config()
+const mongoose = require('mongoose')
+mongoose.set('strictQuery', false)
+const url = process.env.MONGODB_URI
 
 mongoose
   .connect(url)
-  .then((result) => {
-    console.log("connected to MongoDB");
+  .then(() => {
+    console.log('connected to MongoDB')
   })
   .catch((error) => {
-    console.log("error connecting to MongoDB:", error.message);
-  });
+    console.log('error connecting to MongoDB:', error.message)
+  })
 
 const personSchema = new mongoose.Schema({
   name: {
@@ -25,12 +25,12 @@ const personSchema = new mongoose.Schema({
     validate: { validator: (v) => /(\d{2}-\d{6,})|(\d{3}-\d{5,})/.test(v) },
     required: true,
   },
-});
-personSchema.set("toJSON", {
+})
+personSchema.set('toJSON', {
   transform: (document, returnedObject) => {
-    returnedObject.id = returnedObject._id.toString();
-    delete returnedObject._id;
-    delete returnedObject.__v;
+    returnedObject.id = returnedObject._id.toString()
+    delete returnedObject._id
+    delete returnedObject.__v
   },
-});
-module.exports = mongoose.model("Person", personSchema);
+})
+module.exports = mongoose.model('Person', personSchema)
